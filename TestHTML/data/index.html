@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="src/onsenui.css"></link> 
     <link rel="stylesheet" href="src/onsen-comp.min.css"></link>
     <script src="src/onsenui.min.js"></script>
-    <script src="src/jquery-3.3.1.min.js"></script>
+    <script src="src/zepto.min.js"></script>
 </head>
 <body>
     <script>
@@ -32,6 +32,19 @@
           document.getElementById('appNavigator').pushPage(page.id, { data: { title: page.title } });
         }
       };
+
+
+      var ws = new WebSocket("ws://192.168.4.1/sff");
+ 
+      ws.onopen = function() {
+        window.alert("Connected");
+        
+        
+      };
+
+      ws.onmessage = function(evt) {
+        document.getElementById("header").innerHTML  = evt.data;
+      };
     </script>
 
 
@@ -48,7 +61,7 @@
   <template id="tabbar.html">
     <ons-page id="tabbar-page">
       <ons-toolbar>
-        <div class="center">Fish Food Automation</div>
+        <div id="header" class="center">Fish Food Automation</div>
         <div class="right">
           <ons-toolbar-button onclick="fn.toggleMenu()">
             <ons-icon icon="ion-navicon, material:md-menu"></ons-icon>
