@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Fishery Assistant</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/font-awesome.min.css">
+  <link rel="stylesheet" href="src/onsenui.css">
+  <link rel="stylesheet" href="src/onsen-comp.min.css">
+  <script src="src/onsenui.min.js"></script>
+  <script src="src/jquery.min.js"></script>
+  <style>
+    fade-out {
+      -webkit-animation: fade-out 1s cubic-bezier(.86, 0.000, .07, 1.000) both;
+      animation: fade-out 1s cubic-bezier(.86, 0.000, .07, 1.000) both
+    }
+
+    @-webkit-keyframes fade-out {
+      0% {
+        opacity: 1
+      }
+
+      100% {
+        opacity: 0
+      }
+    }
+
+    @keyframes fade-out {
+      0% {
+        opacity: 1
+      }
+
+      100% {
+        opacity: 0
+      }
+    }
+
+    @-webkit-keyframes slide-fwd-bottom {
+      0% {
+        -webkit-transform: translateZ(0) translateY(0);
+        transform: translateZ(0) translateY(0)
+      }
+
+      100% {
+        -webkit-transform: translateZ(160px) translateY(100px);
+        transform: translateZ(160px) translateY(100px)
+      }
+    }
+
+    @keyframes slide-fwd-bottom {
+      0% {
+        -webkit-transform: translateZ(0) translateY(0);
+        transform: translateZ(0) translateY(0)
+      }
+
+      100% {
+        -webkit-transform: translateZ(160px) translateY(100px);
+        transform: translateZ(160px) translateY(100px)
+      }
+    }
+
+    @-webkit-keyframes slide-out-fwd-center {
+      0% {
+        -webkit-transform: translateZ(1);
+        transform: translateZ(1);
+        opacity: 1
+      }
+
+      100% {
+        -webkit-transform: translateZ(600px);
+        transform: translateZ(600px);
+        opacity: 0
+      }
+    }
+
+    @keyframes slide-out-fwd-center {
+      0% {
+        -webkit-transform: translateZ(1);
+        transform: translateZ(1);
+        opacity: 1
+      }
+
+      100% {
+        -webkit-transform: translateZ(600px);
+        transform: translateZ(600px);
+        opacity: 0
+      }
+    }
+
+    ons-carousel-item {
+      display: table;
+      text-align: center;
+    }
+
+    *.lock {
+      overflow: hidden;
+    }
+
+    .list-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: auto;
+    }
+
+    .cards-list {
+      position: relative;
+      padding: 15px 20px 20px 33px;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      max-width: 330px;
+      margin: auto;
+    }
+
+    .card {
+      position: relative;
+      padding-top: 45px;
+      height: 75vh;
+      width: 90%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0px 10px 30px 0px rgba(0, 0, 0, 0.1);
+      transition: opacity 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(0, 0, 0, .125);
+      opacity: 1;
+      margin-bottom: 40px;
+    }
+
+    .card.open {
+      border-radius: 0;
+    }
+
+    .card.hover,
+    .card:hover {
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0);
+      overflow: hidden;
+      transition: border-radius 0.15s ease;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .card.open .card-content {
+      z-index: 500 !important;
+      background: #fff;
+      border-radius: 0px;
+      cursor: default;
+    }
+
+    .banner-holder {
+      position: absolute;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .banner {
+      position: relative;
+      height: 24vh;
+      width: 100%;
+      background-size: contain;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .card.open .banner {
+      height: 45vh;
+      border-radius: 0;
+    }
+
+    .content-holder {
+      max-width: 600px;
+      padding: 0;
+      z-index: 1;
+      height: 100%;
+      background-color: transparent;
+      overflow: hidden;
+    }
+
+    .card.open .content-holder {
+      overflow: auto;
+    }
+
+    .inner-content {
+      top: 20vh;
+      padding: 20px;
+      position: relative;
+      background-color: #fff;
+    }
+
+    .card.open .inner-content {
+      top: 40vh;
+      padding-bottom: env(safe-area-inset-bottom);
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+    }
+
+    .info-holder {
+      display: flex;
+      align-items: center;
+      color: grey;
+    }
+
+    .title {
+      position: relative;
+      margin: 10px 0 20px 0;
+      font-weight: bold;
+      color: grey;
+    }
+
+    .description {
+      font-size: 16px;
+      line-height: 1.5;
+      opacity: 0.6;
+      color: grey;
+    }
+
+    .cover-label {
+      text-align: center;
+      position: absolute;
+      left: 0;
+      width: 100%;
+      bottom: 0px;
+    }
+
+    .carousel-indicators {
+      position: relative;
+      width: 100%;
+      padding: 0;
+      text-align: center;
+      list-style: none;
+    }
+
+    .carousel-indicators li {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      text-indent: -999px;
+      background-color: #c9c9c9;
+      border-radius: 10px;
+    }
+  </style>
+  <script>
+    function wizardSave() {
+      if ("WebSocket" in window) {
+        var ws = new WebSocket("ws://" + window.location.hostname + "/fa");
+
+        ws.onopen = function () {
+          var wizard = {
+            fish: document.getElementById('choose-fish').value,
+            interval: document.getElementById('choose-interval').value,
+            duration: document.getElementById('choose-duration').value,
+            spreadPower: document.getElementById('choose-spread').value
+          }
+
+          var fish = {
+            key: "wizard",
+            value: wizard,
+            type: 'SET'
+          };
+          var json = JSON.stringify(fish);
+
+          ws.send(json, function ack(error) {
+            alert(error);
+            ws.close();
+          });
+
+        };
+
+        ws.onmessage = function (response) {
+          if (response.data == "Error: false") {
+            $("#wizard").attr("style", "animation: slide-out-fwd-center 1500ms forwards");
+          } else {
+            alert("Failed save the data. (" + response.data + ")");
+          }
+          ws.close();
+        };
+      } else {
+        alert("WebSocket not supported by your browser, please use newer browser.");
+      }
+    }
+
+    function selectFish(event) {
+      document.getElementById('choose-fish').removeAttribute('modifier');
+      if (event.target.value == 'material' || event.target.value == 'underbar') {
+        document.getElementById('choose-fish').setAttribute('modifier', event.target.value);
+      }
+    }
+
+    function selectInterval(event) {
+      document.getElementById('choose-interval').removeAttribute('modifier');
+      if (event.target.value == 'material' || event.target.value == 'underbar') {
+        document.getElementById('choose-interval').setAttribute('modifier', event.target.value);
+      }
+    }
+
+    function selectDuration(event) {
+      document.getElementById('choose-duration').removeAttribute('modifier');
+      if (event.target.value == 'material' || event.target.value == 'underbar') {
+        document.getElementById('choose-duration').setAttribute('modifier', event.target.value);
+      }
+    }
+
+    var prev = function () {
+      var carousel = document.getElementById('carousel');
+      carousel.prev();
+    };
+
+    var next = function () {
+      var carousel = document.getElementById('carousel');
+      carousel.next();
+    };
+  </script>
+</head>
+
+<body>
+  <ons-navigator id="navigator" page="opening.html"></ons-navigator>
+  <template id="opening.html">
+    <ons-page>
+      <div
+        style="font-size: 48px; font-weight: bold; 
+          color: rgb(255, 255, 255); top: 35%; 
+          text-align: center; height: 25%; position: relative;
+          background-image: url('images/logo.png');background-size: contain; background-position: center center; background-repeat: no-repeat; background-color: transparent;">
+        <script>
+          $(document).ready(function () {
+            $(".page__content").css("background-color", "black !important;");
+            $("#navigator").attr("animation", "fade");
+            $("#navigator").attr("animation-options", "{duration: 0.1, delay: 0.1, timing: 'ease-in'}");
+
+            setTimeout(function () {
+              $(".page__content").css("animation", "fade-out 900ms forwards;");
+
+              setTimeout(function () {
+                $(".page__content").css("background-color", "white !important;");
+                document.querySelector('#navigator').pushPage('wizard.html');
+              }, 900);
+
+            }, 1800);
+          });
+        </script>
+      </div>
+    </ons-page>
+  </template>
+  <template id="wizard.html">
+    <ons-page id="wizard">
+      <ons-carousel swipeable overscrollable auto-scroll fullscreen id="carousel" auto-scroll-ratio="0.1">
+        <ons-carousel-item>
+          <div>
+            <div class="list-wrapper">
+              <div class="cards-list">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="container-fluid content-holder">
+                      <div class="inner-content" style="top: 10vh;" data-position="20vh" data-position-expanded="40vh">
+                        <div class="info-holder">
+                          <div style="animation: slide-fwd-bottom 1700ms forwards;">Hello,</div>
+                        </div>
+                        <h2 class="title" style="animation: slide-fwd-bottom 2000ms forwards;">Thank you for
+                          choosing me as your</h2>
+                        <div class="description">
+                          <h3 style="animation: slide-fwd-bottom 2500ms forwards;">Fishery Assistant</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="close-btn"><i class="fa fa-times"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ons-carousel-item>
+        <ons-carousel-item>
+          <div>
+            <div class="list-wrapper">
+              <div class="cards-list">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="banner-holder">
+                      <div class="banner" style="background-image: url('images/fish-type.png')">
+                      </div>
+                    </div>
+                    <div class="container-fluid content-holder">
+                      <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                        data-position-expanded="40vh">
+                        <div class="info-holder">
+                          <div></div>
+                        </div>
+                        <h2 class="title">What kind of fish do you cultivate?</h2>
+                        <div class="description">
+                          <ons-select id="choose-fish" onchange="selectFish(event)">
+                            <option value="1">Bandeng</option>
+                            <option value="2">Lele</option>
+                            <option value="3">Udang</option>
+                          </ons-select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="close-btn"><i class="fa fa-times"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ons-carousel-item>
+        <ons-carousel-item>
+          <div>
+            <div class="list-wrapper">
+              <div class="cards-list">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="banner-holder">
+                      <div class="banner" style="background-image: url('images/interval.png')">
+                      </div>
+                    </div>
+                    <div class="container-fluid content-holder">
+                      <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                        data-position-expanded="40vh">
+                        <div class="info-holder">
+                          <div></div>
+                        </div>
+                        <h2 class="title">How often you feeding your fish?</h2>
+                        <div class="description">
+                          <ons-select id="choose-interval" onchange="selectInterval(event)">
+                            <option value="1">1 hour</option>
+                            <option value="2">2 hour</option>
+                            <option value="3">3 hour</option>
+                            <option value="3">4 hour</option>
+                            <option value="3">5 hour</option>
+                            <option value="3">6 hour</option>
+                            <option value="3">7 hour</option>
+                            <option value="3">8 hour</option>
+                          </ons-select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="close-btn"><i class="fa fa-times"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ons-carousel-item>
+        <ons-carousel-item>
+          <div>
+            <div class="list-wrapper">
+              <div class="cards-list">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="banner-holder">
+                      <div class="banner" style="background-image: url('images/duration.png')">
+                      </div>
+                    </div>
+                    <div class="container-fluid content-holder">
+                      <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                        data-position-expanded="40vh">
+                        <div class="info-holder">
+                          <div></div>
+                        </div>
+                        <h2 class="title">and, how long when you give feed?</h2>
+                        <div class="description">
+                          <ons-select id="choose-duration" onchange="selectDuration(event)">
+                            <option value="0.5">30 second</option>
+                            <option value="1">1 minute</option>
+                            <option value="2">2 minute</option>
+                            <option value="3">3 minute</option>
+                            <option value="5">5 minute</option>
+                            <option value="7">7 minute</option>
+                            <option value="10">10 minute</option>
+                            <option value="15">15 minute</option>
+                            <option value="30">20 minute</option>
+                          </ons-select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="close-btn"><i class="fa fa-times"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ons-carousel-item>
+        <ons-carousel-item>
+          <div>
+            <div class="list-wrapper">
+              <div class="cards-list">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="banner-holder">
+                      <div class="banner" style="background-image: url('images/spread-power.png')">
+                      </div>
+                    </div>
+                    <div class="container-fluid content-holder">
+                      <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                        data-position-expanded="40vh">
+                        <div class="info-holder">
+                          <div>Ok, Almost done</div>
+                        </div>
+                        <h2 class="title" style="display: inline-block;">Rotor speed?</h2>
+                        <span class="title"
+                          style="font-size: x-large; font-weight: normal; -webkit-font-smoothing: antialiased; font-style: italic;"
+                          id="spread-answer">&nbsp;25</span>
+                        <div class="description" style="height: 30px;">
+                          <ons-row style=" margin-top: 20px;">
+                            <ons-col>
+                              <ons-range id="choose-spread" value="25" style="width: 100%;"></ons-range>
+                            </ons-col>
+                          </ons-row>
+                        </div>
+                        <script>
+                          document.getElementById('choose-spread').addEventListener('input', function (event) {
+                            document.getElementById('spread-answer').innerHTML = `&nbsp;${event.target.value}`;
+                          })
+                        </script>
+                      </div>
+                      <ons-button modifier="large" id="done"
+                        style="vertical-align: bottom; align-items: center; position: absolute; text-align: center; display: inline-block; top: 85%;"
+                        onclick="wizardSave();">
+                        Got it</ons-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ons-carousel-item>
+      </ons-carousel>
+
+      <ons-carousel-cover style="visibility: visible">
+        <div class="cover-label">
+          <ons-row>
+            <ons-col>
+              <ol class="carousel-indicators">
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+              </ol>
+            </ons-col>
+          </ons-row>
+        </div>
+      </ons-carousel-cover>
+      <script>
+        ons.ready(function () {
+          if (document.querySelectorAll('.carousel-indicators li') != null) {
+            document.querySelectorAll('.carousel-indicators li')[0].style.backgroundColor = '#fbab18';
+
+            var carousel = document.addEventListener('prechange', function (event) {
+              document.querySelectorAll('.carousel-indicators li')[event.lastActiveIndex].style
+                .backgroundColor =
+                '#c9c9c9';
+              document.querySelectorAll('.carousel-indicators li')[event.activeIndex].style.backgroundColor =
+                '#fbab18';
+            });
+          }
+
+        });
+      </script>
+
+      <!-- <ons-carousel-cover style="visibility: hidden">
+        <div class="cover-label">
+          <ons-row>
+            <ons-col width="30%">
+              <ons-button modifier="quiet" id="prev" class="button ob-footer--btn" onclick="prev();">Back
+              </ons-button>
+            </ons-col>
+            <ons-col>
+              <ol class="carousel-indicators">
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+                <li class="indicators"></li>
+              </ol>
+            </ons-col>
+            <ons-col width="30%">
+              <ons-button modifier="quiet" id="next" class="button ob-footer--btn" onclick="next();">Next
+              </ons-button>
+              <ons-button modifier="quiet" id="done" style="display: none;" class="button ob-footer--btn"
+                onclick="wizardSave();">Done
+              </ons-button>
+            </ons-col>
+          </ons-row>
+        </div>
+      </ons-carousel-cover>
+      <style>
+        .page__background {
+          background: linear-gradient(180deg, #ffffff 50%, #905fbd 50%) !important;
+        }
+      </style> -->
+    </ons-page>
+  </template>
+  <template id="home.html">
+
+  </template>
+  <template id="setting.html">
+
+  </template>
+</body>
+
+</html>
