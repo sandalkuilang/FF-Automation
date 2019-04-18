@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="data:,">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap:">
+  <meta name="theme-color" content="#2196f3">
+  <title>Fishery Assistant</title>
+  <script src="src/pace.min.js"></script>
+  <link rel="stylesheet" href="src/framework7-icons.css">
+  <link rel="stylesheet" href="src/framework7.bundle.min.css">
+  <link rel="stylesheet" href="src/onsen-comp.min.css">
+  <link rel="stylesheet" href="src/onsenui-core.css">
+  <link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+  <div id="app" class="framework7-root safe-areas">
+    <div class="view view-main view-init" data-name="home">
+
+      <ons-navigator id="navigator" page="home.html"></ons-navigator>
+      <template id="opening.html">
+        <ons-page>
+          <div
+            style="font-size: 48px; font-weight: bold; 
+                    color: rgb(255, 255, 255); top: 35%; 
+                    text-align: center; height: 25%; position: relative;
+                    background-image: url('images/logo.png');background-size: contain; background-position: center center; background-repeat: no-repeat; background-color: transparent;">
+            <script>
+              $(document).ready(function () {
+                $(".page__content").css("background-color", "black !important;");
+
+                if (true) {
+                  //var ws = new WebSocket("ws://" + window.location.hostname + "/fa");
+                  var ws = new WebSocket("ws://192.168.4.1/fa");
+
+                  ws.onerror = (event) => {
+                    alert("Connection problem");
+                    $("#navigator").attr("animation", "fade");
+                    $("#navigator").attr("animation-options",
+                      "{duration: 0.5, delay: 0.1, timing: 'ease-in'}");
+                    setTimeout(function () {
+                      $(".page__content").css("animation", "fade-out 300ms forwards;");
+
+                      setTimeout(function () {
+                        $(".page__content").css("background-color", "white !important;");
+                        document.querySelector('#navigator').pushPage('hello.html');
+                      }, 200);
+                    }, 1800);
+                  };
+
+                  ws.onopen = function () {
+                    var json = {
+                      key: "wizard",
+                      type: "GET"
+                    }
+
+                    ws.send(JSON.stringify(json), function ack(error) {
+                      alert(error);
+                    });
+                  }
+
+                  ws.onmessage = function (response) {
+                    $("#navigator").attr("animation", "fade");
+                    if (response.data == 1) {
+
+                      $("#navigator").attr("animation-options",
+                        "{duration: 0.5, delay: 0.1, timing: 'ease-in'}");
+                      setTimeout(function () {
+                        $(".page__content").css("animation", "fade-out 300ms forwards;");
+
+                        setTimeout(function () {
+                          $(".page__content").css("background-color", "white !important;");
+                          document.querySelector('#navigator').pushPage('home.html');
+                        }, 200);
+
+                      }, 1800);
+                    } else {
+                      $("#navigator").attr("animation-options",
+                        "{duration: 0.5, delay: 0.1, timing: 'ease-in'}");
+                      setTimeout(function () {
+                        $(".page__content").css("animation", "fade-out 300ms forwards;");
+
+                        setTimeout(function () {
+                          $(".page__content").css("background-color", "white !important;");
+                          document.querySelector('#navigator').pushPage('hello.html');
+                        }, 200);
+                      }, 1800);
+                    }
+                    ws.close();
+                  };
+                }
+              });
+            </script>
+          </div>
+        </ons-page>
+      </template>
+
+      <template id="hello.html">
+        <ons-page>
+          <div style="padding: 20px; position: relative; top: 10vh; left: 15%" data-position="20vh"
+            data-position-expanded="40vh">
+            <div class="info-holder" style="font-size: 25px;">
+              <div style="animation: slide-fwd-bottom 1500ms forwards; position: relative; left: 20%;">
+                Hello,</div>
+            </div>
+            <div class="description" style="font-size: 28px;">
+              <h3 style="animation: slide-fwd-bottom 1800ms forwards; position: relative; left: 22%;">
+                こんにちは</h3>
+            </div>
+            <div class="info-holder" style="font-size: 21px;">
+              <div style="animation: slide-fwd-bottom 2200ms forwards; position: relative; left: 40%;">
+                Ciao,</div>
+            </div>
+            <div class="title-card"
+              style="font-size: 30px; animation: slide-fwd-bottom 2600ms forwards; position: relative; left: 2%; ">
+              Sugeng
+              rawuh,</div>
+            <div class="description">
+              <h2 style="animation: slide-fwd-bottom 3200ms forwards; position: relative; left: 12%;">
+                Bonjour
+              </h2>
+            </div>
+            <script>
+              $(document).ready(function () {
+                setTimeout(function () {
+                  document.querySelector('#navigator').pushPage('language.html');
+                }, 3000);
+              });
+            </script>
+          </div>
+        </ons-page>
+      </template>
+
+      <template id="language.html">
+        <ons-page>
+          <div>
+            <div class="list-wrapper">
+              <div class="cards-list">
+                <div class="cardus">
+                  <div class="cardus-content">
+                    <div class="banner-holder">
+                      <div class="banner" style="background-image: url('images/language.png')">
+                      </div>
+                    </div>
+                    <div class="container-fluid content-holder">
+                      <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                        data-position-expanded="40vh">
+                        <div class="description" style="position: relative; top: 0; left: 0;">
+                          <div class="list">
+                            <ul>
+                              <li>
+                                <label class="item-radio item-content">
+                                  <input type="radio" id="id-ja" name="choose-language" value="Jawa" />
+                                  <i class="icon icon-radio"></i>
+                                  <div class="item-inner">
+                                    <div class="item-title">Jawa</div>
+                                  </div>
+                                </label>
+                              </li>
+                              <li>
+                                <label class="item-radio item-content">
+                                  <input type="radio" id="id-id" name="choose-language" value="Bahasa Indonesia" />
+                                  <i class="icon icon-radio"></i>
+                                  <div class="item-inner">
+                                    <div class="item-title">Bahasa Indonesia</div>
+                                  </div>
+                                </label>
+                              </li>
+                              <li>
+                                <label class="item-radio item-content">
+                                  <input type="radio" id="en-us" name="choose-language" value="English" />
+                                  <i class="icon icon-radio"></i>
+                                  <div class="item-inner">
+                                    <div class="item-title">English</div>
+                                  </div>
+                                </label>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script>
+              var currentLangId = 'id-ja';
+              var currentLangValue = 'id-ja';
+              $$('input[name="choose-language"]').on('change', function (e) {
+                if (event.target.id !== currentLangId) {
+                  document.getElementById(currentLangId).checked = false;
+                  currentLangId = event.target.id;
+                  currentLangValue = event.target.value;
+                }
+                setTimeout(function () {
+                  $(".page__content").css("animation", "fade-out 300ms forwards;");
+
+                  setTimeout(function () {
+                    $(".page__content").css("background-color", "white !important;");
+                    document.querySelector('#navigator').pushPage('wizard.html');
+                  }, 200);
+                }, 500);
+              });
+            </script>
+          </div>
+        </ons-page>
+      </template>
+
+      <template id="wizard.html">
+        <ons-page id="wizard">
+          <ons-carousel swipeable overscrollable auto-scroll fullscreen id="carousel" auto-scroll-ratio="0.1">
+            <ons-carousel-item>
+              <div>
+                <div class="list-wrapper">
+                  <div class="cards-list">
+                    <div class="cardus">
+                      <div class="cardus-content">
+                        <div class="banner-holder">
+                          <div class="banner" style="background-image: url('images/interval.png')">
+                          </div>
+                        </div>
+                        <div class="container-fluid content-holder">
+                          <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                            data-position-expanded="40vh">
+                            <div class="info-holder">
+                              <div></div>
+                            </div>
+                            <h2 class="title-card">How often you feeding your fish?</h2>
+                            <div class="description">
+                              <select id="choose-interval" placeholder="Please choose..."
+                                onchange="selectInterval(event)">
+                                <option value="1">1 hour</option>
+                                <option value="2">2 hour</option>
+                                <option value="2.5" selected>2.5 hour</option>
+                                <option value="3">3 hour</option>
+                                <option value="4">4 hour</option>
+                                <option value="5">5 hour</option>
+                                <option value="6">6 hour</option>
+                                <option value="7">7 hour</option>
+                                <option value="8">8 hour</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ons-carousel-item>
+            <ons-carousel-item>
+              <div>
+                <div class="list-wrapper">
+                  <div class="cards-list">
+                    <div class="cardus">
+                      <div class="cardus-content">
+                        <div class="banner-holder">
+                          <div class="banner" style="background-image: url('images/duration.png')">
+                          </div>
+                        </div>
+                        <div class="container-fluid content-holder">
+                          <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                            data-position-expanded="40vh">
+                            <div class="info-holder">
+                              <div></div>
+                            </div>
+                            <h2 class="title-card">and, how long when you give feed?</h2>
+                            <div class="description">
+                              <select id="choose-duration" onchange="selectDuration(event)">
+                                <option value="0.5">30 second</option>
+                                <option value="1">1 minute</option>
+                                <option value="2">2 minute</option>
+                                <option value="3" selected>3 minute</option>
+                                <option value="5">5 minute</option>
+                                <option value="7">7 minute</option>
+                                <option value="10">10 minute</option>
+                                <option value="15">15 minute</option>
+                                <option value="20">20 minute</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ons-carousel-item>
+            <ons-carousel-item>
+              <div>
+                <div class="list-wrapper">
+                  <div class="cards-list">
+                    <div class="cardus">
+                      <div class="cardus-content">
+                        <div class="banner-holder">
+                          <div class="banner" style="background-image: url('images/start.png')">
+                          </div>
+                        </div>
+                        <div class="container-fluid content-holder">
+                          <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                            data-position-expanded="40vh">
+                            <div class="info-holder">
+                              <div></div>
+                            </div>
+                            <h2 class="title-card" style="display: inline-block;">Wake up time?</h2>
+                            <div class="description">
+                              <select id="choose-wakeup" onchange="selectStart(event)">
+                                <option value="300">05:00</option>
+                                <option value="330">05:30</option>
+                                <option value="360">06:00</option>
+                                <option value="390">06:30</option>
+                                <option value="420">07:00</option>
+                                <option value="480" selected>08:00</option>
+                                <option value="540">09:00</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ons-carousel-item>
+            <ons-carousel-item>
+              <div>
+                <div class="list-wrapper">
+                  <div class="cards-list">
+                    <div class="cardus">
+                      <div class="cardus-content">
+                        <div class="banner-holder">
+                          <div class="banner" style="background-image: url('images/end.png')">
+                          </div>
+                        </div>
+                        <div class="container-fluid content-holder">
+                          <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                            data-position-expanded="40vh">
+                            <div class="info-holder">
+                              <div></div>
+                            </div>
+                            <h2 class="title-card" style="display: inline-block;">Sleep time?</h2>
+                            <div class="description">
+                              <select id="choose-sleep" onchange="selectEnd(event)">
+                                <option value="1020">17:00</option>
+                                <option value="1080">18:00</option>
+                                <option value="1140">19:00</option>
+                                <option value="1200">20:00</option>
+                                <option value="1260" selected>21:00</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ons-carousel-item>
+            <ons-carousel-item>
+              <div>
+                <div class="list-wrapper">
+                  <div class="cards-list">
+                    <div class="cardus">
+                      <div class="cardus-content">
+                        <div class="banner-holder">
+                          <div class="banner" style="background-image: url('images/spread-power.png')">
+                          </div>
+                        </div>
+                        <div class="container-fluid content-holder">
+                          <div class="inner-content" style="padding-top:50px" data-position="20vh"
+                            data-position-expanded="40vh">
+                            <div class="info-holder">
+                              <div>Ok, Almost done</div>
+                            </div>
+                            <h2 class="title-card" style="display: inline-block;">Spread power?</h2>
+                            <span class="title-card"
+                              style="font-size: large; font-weight: normal; -webkit-font-smoothing: antialiased; font-style: italic;"
+                              id="spread-answer">&nbsp;50</span>
+                            <div class="description" style="height: 30px;">
+                              <ons-row style=" margin-top: 20px;">
+                                <ons-col>
+                                  <ons-range id="choose-spread" value="50" style="width: 100%;"></ons-range>
+                                </ons-col>
+                              </ons-row>
+                            </div>
+                            <script>
+                              document.getElementById('choose-spread').addEventListener('input', function (event) {
+                                document.getElementById('spread-answer').innerHTML =
+                                  `&nbsp;${event.target.value}`;
+                              })
+                            </script>
+                          </div>
+                          <div class="block" style="top: 150px;">
+                            <button modifier=" large" id="done" class="button button-fill button"
+                              onclick="wizardSave();">
+                              continue</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ons-carousel-item>
+          </ons-carousel>
+          <ons-carousel-cover>
+            <div class=" cover-label" id="indicator">
+              <ons-row>
+                <ons-col>
+                  <ol class="carousel-indicators">
+                    <li class="indicators"></li>
+                    <li class="indicators"></li>
+                    <li class="indicators"></li>
+                    <li class="indicators"></li>
+                    <li class="indicators"></li>
+                  </ol>
+                </ons-col>
+              </ons-row>
+            </div>
+          </ons-carousel-cover>
+          <script>
+            ons.ready(function () {
+              if (document.querySelectorAll('.carousel-indicators li') != null) {
+                document.querySelectorAll('.carousel-indicators li')[0].style.backgroundColor =
+                  '#fbab18';
+
+                var carousel = document.addEventListener('prechange', function (event) {
+                  document.querySelectorAll('.carousel-indicators li')[event.lastActiveIndex]
+                    .style
+                    .backgroundColor = '#c9c9c9';
+
+                  document.querySelectorAll('.carousel-indicators li')[event.activeIndex]
+                    .style
+                    .backgroundColor =
+                    '#fbab18';
+                });
+              }
+            });
+          </script>
+        </ons-page>
+      </template>
+
+      <template id="home.html">
+        <ons-page>
+          <div class="page page-current page-with-navbar tab-active">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"></div>
+                <div class="title sliding" style="left: 0px">Fishery Assistant</div>
+                <div class="right">
+                  <a class="link icon-only">
+                    <i class=" icon f7-icons"
+                      onclick="fn.pushPage({'id': 'settings.html', 'title': 'Network'}, 'default')">settings_fill</i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="block-title">Interval</div>
+              <div class="block block-strong text-align-center">
+                <div class="gauge gauge-interval"></div>
+              </div>
+              <div class="card card-expandable" style="height: 48%;">
+                <div class="card-content">
+                  <div class="bg-color-green">
+                    <div class="card-header text-color-white display-block">
+                      <small style="opacity: 1">Time</small>
+                    </div>
+                    <a href="#" class="link card-close card-opened-fade-in color-black"
+                      style="position: absolute; right: 15px; top: 15px">
+                      <i class="icon f7-icons">close_round_fill</i>
+                    </a>
+                  </div>
+                  <div class="card-content-padding">
+                    <div class="list media-list">
+                      <ul>
+                        <li class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title-row">
+                              <div id="wakeup" class="item-title">04:10</div>
+                            </div>
+                            <div class="item-subtitle">Wake up</div>
+                          </div>
+                        </li>
+                        <li class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title-row">
+                              <div id="sleep" class="item-title">20:15</div>
+                            </div>
+                            <div class="item-subtitle">Sleep</div>
+                          </div>
+                        </li>
+                        <li class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title-row">
+                              <div id="duration" class="item-title">2.1 minute</div>
+                            </div>
+                            <div class="item-subtitle">Feeding Duration</div>
+                          </div>
+                        </li>
+                        <li class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title-row">
+                              <div id="spreadPower" class="item-title">41 %</div>
+                            </div>
+                            <div class="item-subtitle">Spread Power</div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card card-expandable" style="height: 120px;">
+                <div class="card-content">
+                  <div class="bg-color-green">
+                    <div class="card-header text-color-white display-block">
+                      <small style="opacity: 1">Sensor</small>
+                    </div>
+                    <a href="#" class="link card-close card-opened-fade-in color-black"
+                      style="position: absolute; right: 15px; top: 15px">
+                      <i class="icon f7-icons">close_round_fill</i>
+                    </a>
+                  </div>
+                  <div class="card-content-padding">
+                    <div class="list media-list">
+                      <ul>
+                        <li class="item-content">
+                          <div class="item-inner">
+                            <div class="item-title-row">
+                              <div id="weather" class="item-title">On</div>
+                            </div>
+                            <div class="item-subtitle">Weather</div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script>
+              window.fn = {};
+              window.fn.pushPage = function (page, anim) {
+                if (anim) {
+                  document.getElementById('navigator').pushPage(page.id, {
+                    data: {
+                      title: page.title
+                    },
+                    animation: anim
+                  });
+                } else {
+                  document.getElementById('navigator').pushPage(page.id, {
+                    data: {
+                      title: page.title
+                    }
+                  });
+                }
+              };
+              window.fn.popPage = function (anim) {
+                if (anim) {
+                  document.getElementById('navigator').popPage({
+                    data: {
+
+                    },
+                    animation: anim
+                  });
+                } else {
+                  document.getElementById('navigator').popPage({
+                    data: {
+
+                    }
+                  });
+                }
+              };
+              $(document).ready(function () {
+                refreshContent();
+              });
+            </script>
+          </div>
+        </ons-page>
+      </template>
+
+
+
+      <template id="settings.html">
+        <ons-page id="settings">
+          <div class="page page-current page-with-navbar">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left">
+                  <a class="link" onclick="fn.popPage('default')">
+                    <i class="icon icon-back"></i>
+                    <span class="if-not-md">Back</span>
+                  </a>
+                </div>
+                <div class="title sliding" style="left: 0px">Settings</div>
+                <div class="right"></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <ons-list>
+                <ons-list-header></ons-list-header>
+                <ons-list-item modifier="chevron"
+                  onclick="fn.pushPage({'id': 'wifi.html', 'title': 'Network'}, 'default')">
+                  Wi-Fi
+                </ons-list-item>
+                <ons-list-item modifier="chevron"
+                  onclick="fn.pushPage({'id': 'sensor.html', 'title': 'Sensor'}, 'default')">
+                  Sensor
+                </ons-list-item>
+                <ons-list-header></ons-list-header>
+                <ons-list-item modifier="chevron"
+                  onclick="fn.pushPage({'id': 'about.html', 'title': 'About'}, 'default')">
+                  About
+                </ons-list-item>
+              </ons-list>
+              <script>
+                window.fn = {};
+                window.fn.pushPage = function (page, anim) {
+                  if (anim) {
+                    document.getElementById('navigator').pushPage(page.id, {
+                      data: {
+                        title: page.title
+                      },
+                      animation: anim
+                    });
+                  } else {
+                    document.getElementById('navigator').pushPage(page.id, {
+                      data: {
+                        title: page.title
+                      }
+                    });
+                  }
+                };
+                window.fn.popPage = function (anim) {
+                  if (anim) {
+                    document.getElementById('navigator').popPage({
+                      data: {
+
+                      },
+                      animation: anim
+                    });
+                  } else {
+                    document.getElementById('navigator').popPage({
+                      data: {
+
+                      }
+                    });
+                  }
+                };
+              </script>
+            </div>
+          </div>
+        </ons-page>
+      </template>
+
+
+      <template id="wifi.html">
+        <ons-page>
+          <ons-toolbar>
+            <div class="left">
+              <ons-back-button>Settings</ons-back-button>
+            </div>
+            <div class=" center">Wi-Fi</div>
+          </ons-toolbar>
+          <p style="text-align: center">
+
+          </p>
+          <script>
+
+          </script>
+        </ons-page>
+      </template>
+
+
+      <template id="sensor.html">
+        <ons-page>
+          <ons-toolbar>
+            <div class="left">
+              <ons-back-button>Settings</ons-back-button>
+            </div>
+            <div class=" center">Sensor</div>
+          </ons-toolbar>
+          <ons-list>
+            <ons-list-header
+              style="text-transform: none!important; color: #7b7b7b; font-weight: normal; font-size: 14px; line-height: 20px; height: 70px; padding: 10px 0 0 15px;">
+              Turn on weather sensor will enabling the device to understand the environment by reading temperature and
+              humidity.</ons-list-header>
+            <ons-list-item>
+              <label id="enabled-label" class="center" for="switch2">
+                Weather Sensor
+              </label>
+              <div class="right">
+                <ons-switch id="disabled-switch" input-id="weatherSensor"></ons-switch>
+              </div>
+            </ons-list-item>
+          </ons-list>
+        </ons-page>
+      </template>
+
+
+      <template id="about.html">
+        <ons-page>
+          <ons-toolbar>
+            <div class="left">
+              <ons-back-button>Settings</ons-back-button>
+            </div>
+            <div class=" center">About</div>
+          </ons-toolbar>
+          <ons-list>
+            <ons-list-header></ons-list-header>
+            <ons-list-item>
+              <label id="enabled-label" class="center">
+                Model Name
+              </label>
+              <div class="right right-label">
+                <span>Fish Assistant</span>
+              </div>
+            </ons-list-item>
+            <ons-list-item>
+              <label id="enabled-label" class="center">
+                Serial Number
+              </label>
+              <div class="right right-label">
+                <span>C7629GHJAIBB4Q</span>
+              </div>
+            </ons-list-item>
+          </ons-list>
+        </ons-page>
+      </template>
+
+
+      <template id="reset.html">
+        <ons-page>
+          <ons-toolbar>
+            <div class="left">
+              <ons-back-button>Settings</ons-back-button>
+            </div>
+            <div class=" center">Reset</div>
+          </ons-toolbar>
+          <ons-list>
+            <ons-list-header></ons-list-header>
+
+          </ons-list>
+        </ons-page>
+      </template>
+
+    </div>
+  </div>
+
+  <script src="src/jquery.min.js"></script>
+  <script src="src/framework7.bundle.min.js"></script>
+  <script src="src/onsenui.min.js"></script>
+  <script>
+    const toHour = (n) => `0${n / 60 ^ 0}`.slice(-2) + ':' + ('0' + n % 60).slice(-2)
+
+    var app = new Framework7({
+      root: '#app',
+      theme: 'ios',
+      name: 'Fishery Assistant',
+      id: 'com.fisheryassistant.test',
+      navbar: {
+        hideOnPageScroll: true,
+        iosCenterTitle: true,
+      },
+      pushState: true,
+      card: {
+        hideNavbarOnOpen: true,
+        hideToolbarOnOpen: false,
+      },
+      statusbar: {
+        iosOverlaysWebview: true,
+      },
+      view: {
+        stackPages: true
+      },
+      panel: {
+        swipe: 'left',
+      },
+      routes: [{
+          path: '/home/',
+          el: document.querySelector('.view[data-name="home"]'),
+        },
+        {
+          path: '/settings/',
+          el: document.querySelector('.view[data-name="settings"]'),
+        }
+      ],
+    });
+
+    var $$ = Dom7;
+    var intervalGauge;
+
+    function refreshContent() {
+      //var ws = new WebSocket("ws://" + window.location.hostname + "/fa");
+      var ws = new WebSocket("ws://192.168.4.1/fa");
+
+      ws.onopen = function () {
+        var data = {
+          key: "app",
+          type: "GET"
+        }
+
+        ws.send(JSON.stringify(data), function ack(error) {
+          alert(error);
+        });
+      };
+
+      ws.onmessage = function (response) {
+        var appConfig = JSON.parse(response.data);
+
+        $("#wakeup")[0].textContent = toHour(appConfig.wakeup);
+        $("#sleep")[0].textContent = toHour(appConfig.sleep);
+        $("#duration")[0].textContent = appConfig.duration + ' ' + 'minute';
+        $("#spreadPower")[0].textContent = appConfig.spreadPower + ' ' + '%';
+        $("#weather")[0].textContent = appConfig.weather == 1 ? "On" : "Off";
+
+        console.log(appConfig);
+        var each = Math.floor((appConfig.sleep - appConfig.wakeup) / appConfig.interval);
+
+        intervalGauge = app.gauge.create({
+          el: '.gauge-interval',
+          type: 'semicircle',
+          value: each / 10,
+          size: 220,
+          borderColor: '#2196f3',
+          borderWidth: 10,
+          valueText: appConfig.interval + ' ' + 'hour',
+          valueFontSize: 28,
+          valueTextColor: '#2196f3',
+          borderBgColor: '#2196f3',
+          labelText: 'Every',
+          labelFontSize: '21'
+        });
+
+        ws.close();
+      };
+    }
+
+
+    function wizardSave() {
+      if (true) {
+        // var ws = new WebSocket("ws://" + window.location.hostname + "/fa");
+        var ws = new WebSocket("ws://192.168.4.1/fa");
+
+        ws.onopen = function () {
+          var now = new Date();
+          try {
+            var wizard = {
+              language: currentLangId,
+              epoch: Math.floor(new Date().getTime() / 1000) - (-(new Date().getTimezoneOffset() / -60) * 3600 + 2),
+              interval: document.getElementById('choose-interval').value,
+              spreadPower: document.getElementById('choose-spread').value,
+              duration: document.getElementById('choose-duration').value,
+              wakeup: document.getElementById('choose-wakeup').value,
+              sleep: document.getElementById('choose-sleep').value
+            }
+
+            var fish = {
+              key: "wizard",
+              value: wizard,
+              type: 'SET'
+            };
+            var json = JSON.stringify(fish);
+
+            ws.send(json, function ack(error) {
+              alert(error);
+            });
+          } catch (error) {
+            alert(error);
+          }
+        };
+
+        ws.onmessage = function (response) {
+          if (response.data == "Error: false") {
+            document.querySelector('#navigator').pushPage('home.html');
+
+            $("#wizard").attr("style", "animation: slide-out-fwd-center 1500ms forwards");
+          } else {
+            alert("Failed save the data. (" + response.data + ")");
+          }
+          ws.close();
+        };
+      } else {
+        alert("WebSocket not supported by your browser, please use newer browser.");
+      }
+    }
+
+    function selectInterval(event) {
+      document.getElementById('choose-interval').removeAttribute('modifier');
+      if (event.target.value == 'material' || event.target.value == 'underbar') {
+        document.getElementById('choose-interval').setAttribute('modifier', event.target.value);
+      }
+      document.getElementById('carousel').next();
+    }
+
+    function selectDuration(event) {
+      document.getElementById('choose-duration').removeAttribute('modifier');
+      if (event.target.value == 'material' || event.target.value == 'underbar') {
+        document.getElementById('choose-duration').setAttribute('modifier', event.target.value);
+      }
+      document.getElementById('carousel').next();
+    }
+
+    function selectStart(event) {
+      document.getElementById('choose-wakeup').removeAttribute('modifier');
+      if (event.target.value == 'material' || event.target.value == 'underbar') {
+        document.getElementById('choose-wakeup').setAttribute('modifier', event.target.value);
+      }
+      document.getElementById('carousel').next();
+    }
+
+    function selectEnd(event) {
+      document.getElementById('choose-sleep').removeAttribute('modifier');
+      if (event.target.value == 'material' || event.target.value == 'underbar') {
+        document.getElementById('choose-sleep').setAttribute('modifier', event.target.value);
+      }
+      document.getElementById('carousel').next();
+    }
+  </script>
+</body>
+
+</html>

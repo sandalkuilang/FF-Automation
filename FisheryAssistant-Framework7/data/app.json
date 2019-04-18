@@ -1,0 +1,10 @@
+{
+    "language": "",
+    "interval": "4",
+    "spreadPower": "25",
+    "duration": "0.5",
+    "wakeup": "7.5",
+    "sleep": "21",
+    "weather": "1",
+    "wizard": "0"
+}
